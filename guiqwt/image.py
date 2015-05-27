@@ -1547,6 +1547,20 @@ class XYImageItem(RawImageItem):
     """
     __implements__ = (IBasePlotItem, IBaseImageItem, ISerializableType)
     def __init__(self, x=None, y=None, data=None, param=None):
+        # if x and y are not increasing arrays, sort them and data accordingly
+        if not np.all(np.diff(x) > 0):
+            x_idx = np.argsort(x)
+            x=x[x_idx]
+            data = data[:,x_idx]
+        else:
+            x_idx = np.arange(0,len(x))
+        if not np.all(np.diff(y) > 0):
+            y_idx = np.argsort(y)
+            y=y[y_idx]
+            data = data[y_idx,:]
+        else:
+            y_idx = np.arange(0,len(y))
+            
         super(XYImageItem, self).__init__(data, param)
         self.x = None
         self.y = None
